@@ -27,6 +27,7 @@ def rotated(data, matrix) -> list:
 
 def manipulateData(data, manipulation):
     manipulation = manipulation.lower()
+    if manipulation == "original": return
     translation_flag = manipulation == 'translate'
     matrix = {'rotatedx': X_MATRIX,
               'rotatedy': Y_MATRIX,

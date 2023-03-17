@@ -24,6 +24,8 @@ def CrossFoldValidation(classifier="SVM"):
     iris = datasets.load_iris()
     X = iris.data[:, :]
     y = iris.target 
+    # print(y)
+
     clf = None
     if classifier == "SVM":
         #default SVM 
@@ -36,14 +38,20 @@ def CrossFoldValidation(classifier="SVM"):
     test_indices=[]
     #4-fold cross validation
     kf = KFold(n_splits=4)
+    
     for i, (train_index, test_index) in enumerate(kf.split(X)):
+        # print(train_index)
+        print(test_index)
         #train classifier
         clf.fit(X[train_index], y[train_index])
         #get predictions and save
         pred.append(clf.predict(X[test_index]))
         #save current test index
         test_indices.append(test_index)
+
     return pred, test_indices, y
+
+
 
 parser = argparse.ArgumentParser(description='Demo for Iris dataset classification')
 parser.add_argument('classifier', nargs='?', type=str, default='SVM', help='Classifier type; if none given, SVM is default.')

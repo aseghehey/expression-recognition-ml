@@ -1,11 +1,13 @@
+from FileReading import GetDataset
 from sklearn import svm, datasets
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, accuracy_score
+from sklearn.tree import DecisionTreeClassifier
 import argparse
 
-def PrintEvalMetrics(pred, indices, y):
+def PrintEvalMetrics(pred, indices, y, filename="results/result.txt",test_name=""): # results
     #manually merge predictions and testing labels from each of the folds to make confusion matrix
     finalPredictions = []
     groundTruth = []
@@ -13,35 +15,38 @@ def PrintEvalMetrics(pred, indices, y):
         finalPredictions.extend(p)
     for i in indices:
         groundTruth.extend(y[i])
-    print(confusion_matrix(finalPredictions, groundTruth))
-    print("Precision: ", precision_score(groundTruth, finalPredictions, average='macro'))
-    print("Recall: ", recall_score(groundTruth, finalPredictions, average='macro'))
-    print("Accuracy: " , accuracy_score(groundTruth, finalPredictions))
+    with open(filename, "a") as file:
+        file.write(f"\n\n{test_name}\n{confusion_matrix(finalPredictions, groundTruth)}")
+        file.write(f"\nPrecision: {precision_score(groundTruth, finalPredictions, average='macro')}")
+        file.write(f"\nRecall: {recall_score(groundTruth, finalPredictions, average='macro')}")
+        file.write(f"\nAccuracy: {accuracy_score(groundTruth, finalPredictions)}")
 
 
 def CrossFoldValidation(classifier="SVM"):
     #get iris datset
-    iris = datasets.load_iris()
-    X = iris.data[:, :]
-    y = iris.target 
-    # print(y)
+    # iris = datasets.load_iris()
+    # X = iris.data[:, :]
+    # y = iris.target 
+    # print(X.shape)
+    X, y = GetDataset()
 
-    clf = None
+    clf = DecisionTreeClassifier()
+    '''
     if classifier == "SVM":
         #default SVM 
         clf = svm.SVC()
     elif classifier == "RF":
         #default random forest
         clf = RandomForestClassifier()
+    '''
     #save predictions and indices
     pred=[]
     test_indices=[]
     #4-fold cross validation
-    kf = KFold(n_splits=4)
+    kf = KFold(n_splits=10)
     
     for i, (train_index, test_index) in enumerate(kf.split(X)):
-        # print(train_index)
-        print(test_index)
+        print(train_index)
         #train classifier
         clf.fit(X[train_index], y[train_index])
         #get predictions and save
@@ -51,10 +56,13 @@ def CrossFoldValidation(classifier="SVM"):
 
     return pred, test_indices, y
 
-
-
-parser = argparse.ArgumentParser(description='Demo for Iris dataset classification')
-parser.add_argument('classifier', nargs='?', type=str, default='SVM', help='Classifier type; if none given, SVM is default.')
-args = parser.parse_args()
-pred, test_indices, y = CrossFoldValidation(args.classifier)
-PrintEvalMetrics(pred, test_indices, y)
+if __name__ == "__main__":
+    pred, test_indices, y =CrossFoldValidation()
+    PrintEvalMetrics(pred, test_indices, y)
+    '''
+    parser = argparse.ArgumentParser(description='Demo for Iris dataset classification')
+    parser.add_argument('classifier', nargs='?', type=str, default='SVM', help='Classifier type; if none given, SVM is default.')
+    args = parser.parse_args()
+    pred, test_indices, y = CrossFoldValidation(args.classifier)
+    PrintEvalMetrics(pred, test_indices, y)
+    '''

@@ -1,18 +1,25 @@
 import os
-from collections import defaultdict
-import csv
+import numpy as np
+from DataManipulation import ManipulateData
 
-def readData(filename, data) -> None:
+def ReadData(filename, manipulator):
     """ Given a file and array, reads contents of file and appends to array as floats"""
+    temp = []
     with open(filename, "r") as file:
         for line in file:
             cur = (line[line.index(' ') + 1:].rstrip().split(' '))
             cur = list(map(lambda x: float(x), cur))
-            data.append(cur)
+            if manipulator != "original":
+                cur = ManipulateData(cur, manipulator)
+            for v in cur: temp.append(v)
+    return temp
 
-# [46.636056, 14.644247, -93.946304]
-def getDataset(path='BU4DFE_BND_V1.1'):
-    dataset = defaultdict(list)
+def GetDataset(path='BU4DFE_BND_V1.1', manipulation="original"):
+    data = []
+    target = []
+    # to map emotion to a number
+    map_emotion = {'Happy':0, 'Sad':1, 'Angry':2, 'Fear':3, 'Surprise':4, 'Disgust':5}
+
     dir = os.walk(path)
     for folder_path, _, _ in dir:
         cur_emotion = folder_path.split('/')[-1]
@@ -25,5 +32,15 @@ def getDataset(path='BU4DFE_BND_V1.1'):
             extension_checker = file[file.index('.'):] == ".bnd"
             if not extension_checker: continue 
             filepath = folder_path + '/' + file # would be something like BU4DFE_BND_V1.1/F001/Angry/000.bnd
-            readData(filename=filepath, data=dataset[cur_emotion])
-    return dataset
+            target.append(map_emotion[cur_emotion])
+            data.append(ReadData(filename=filepath, manipulator=manipulation))
+
+    target = np.array(target)
+    data = np.array(data)
+    indices = [i for i in range(len(data))] # useful for train and test indices
+    indices = np.array(indices)
+
+    return data, target, indices
+
+if __name__ == "__main__":
+    d, t, indices = GetDataset(manipulation="translate")

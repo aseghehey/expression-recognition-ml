@@ -7,7 +7,7 @@ from sklearn.metrics import precision_score, recall_score, accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 import argparse
 
-def PrintEvalMetrics(pred, indices, y, filename="results/result.txt",test_name=""): # results
+def PrintEvalMetrics(pred, indices, y, filename="result.txt",test_name=""): # results
     #manually merge predictions and testing labels from each of the folds to make confusion matrix
     finalPredictions = []
     groundTruth = []
@@ -16,7 +16,7 @@ def PrintEvalMetrics(pred, indices, y, filename="results/result.txt",test_name="
     for i in indices:
         groundTruth.extend(y[i])
     with open(filename, "a") as file:
-        file.write(f"\n\n{test_name}\n{confusion_matrix(finalPredictions, groundTruth)}")
+        file.write(f"\n\n{test_name}\n{confusion_matrix(groundTruth, finalPredictions)}")
         file.write(f"\nPrecision: {precision_score(groundTruth, finalPredictions, average='macro')}")
         file.write(f"\nRecall: {recall_score(groundTruth, finalPredictions, average='macro')}")
         file.write(f"\nAccuracy: {accuracy_score(groundTruth, finalPredictions)}")
@@ -57,8 +57,8 @@ def CrossFoldValidation(classifier="SVM"):
     return pred, test_indices, y
 
 if __name__ == "__main__":
-    pred, test_indices, y =CrossFoldValidation()
-    PrintEvalMetrics(pred, test_indices, y)
+    # pred, test_indices, y =CrossFoldValidation()
+    # PrintEvalMetrics(pred, test_indices, y)
     '''
     parser = argparse.ArgumentParser(description='Demo for Iris dataset classification')
     parser.add_argument('classifier', nargs='?', type=str, default='SVM', help='Classifier type; if none given, SVM is default.')
@@ -66,3 +66,7 @@ if __name__ == "__main__":
     pred, test_indices, y = CrossFoldValidation(args.classifier)
     PrintEvalMetrics(pred, test_indices, y)
     '''
+    iris = datasets.load_iris()
+    X = iris.data[:, :]
+    y = iris.target 
+    print(type(iris))

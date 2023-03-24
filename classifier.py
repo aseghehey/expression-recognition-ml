@@ -20,7 +20,7 @@ def Split(dataframe, nFold=10):
     
 
 def Classify(df, X, nFold=10, clf="SVM"):
-
+    print(clf)
     if clf == "TREE": 
         clf = DecisionTreeClassifier()
     elif clf == "RF": 

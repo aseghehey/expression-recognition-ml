@@ -1,4 +1,3 @@
-from FileReading import GetDataset
 from sklearn import svm, datasets
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix
@@ -21,7 +20,7 @@ def PrintEvalMetrics(pred, indices, y, filename="result.txt",test_name=""): # re
         file.write(f"\nRecall: {recall_score(groundTruth, finalPredictions, average='macro')}")
         file.write(f"\nAccuracy: {accuracy_score(groundTruth, finalPredictions)}")
 
-
+'''
 def CrossFoldValidation(classifier="SVM"):
     #get iris datset
     # iris = datasets.load_iris()
@@ -31,14 +30,12 @@ def CrossFoldValidation(classifier="SVM"):
     X, y = GetDataset()
 
     clf = DecisionTreeClassifier()
-    '''
     if classifier == "SVM":
         #default SVM 
         clf = svm.SVC()
     elif classifier == "RF":
         #default random forest
         clf = RandomForestClassifier()
-    '''
     #save predictions and indices
     pred=[]
     test_indices=[]
@@ -59,14 +56,13 @@ def CrossFoldValidation(classifier="SVM"):
 if __name__ == "__main__":
     # pred, test_indices, y =CrossFoldValidation()
     # PrintEvalMetrics(pred, test_indices, y)
-    '''
     parser = argparse.ArgumentParser(description='Demo for Iris dataset classification')
     parser.add_argument('classifier', nargs='?', type=str, default='SVM', help='Classifier type; if none given, SVM is default.')
     args = parser.parse_args()
     pred, test_indices, y = CrossFoldValidation(args.classifier)
     PrintEvalMetrics(pred, test_indices, y)
-    '''
     iris = datasets.load_iris()
     X = iris.data[:, :]
     y = iris.target 
     print(type(iris))
+'''

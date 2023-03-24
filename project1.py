@@ -15,4 +15,4 @@ if __name__ == "__main__":
 
     df, data = GetData(path=args.dir, manipulation=args.dataType)
     pred, testIndices, targets = Classify(df, data, clf=args.classifier)
-    PrintEvalMetrics(pred, testIndices, targets, test_name=args.testName)
+    PrintEvalMetrics(pred, testIndices, targets, test_name=args.testName, filename=args.fileName)

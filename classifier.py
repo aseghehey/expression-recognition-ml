@@ -26,7 +26,7 @@ def Classify(df, X, nFold=10, clf="SVM"):
     elif clf == "RF": 
         clf = RandomForestClassifier()
     else: 
-        clf = svm.LinearSVC(dual=False)
+        clf = svm.SVC()
 
     y = df['target'].to_numpy()
     split_indices = Split(df, nFold)

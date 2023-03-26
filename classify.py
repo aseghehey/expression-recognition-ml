@@ -6,7 +6,7 @@ from sklearn.metrics import precision_score, recall_score, accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 import argparse
 
-def PrintEvalMetrics(pred, indices, y, filename="result.txt",test_name=""): # results
+def PrintEvalMetrics(pred, indices, y): # results
     #manually merge predictions and testing labels from each of the folds to make confusion matrix
     finalPredictions = []
     groundTruth = []
@@ -14,11 +14,11 @@ def PrintEvalMetrics(pred, indices, y, filename="result.txt",test_name=""): # re
         finalPredictions.extend(p)
     for i in indices:
         groundTruth.extend(y[i])
-    with open(filename, "a") as file:
-        file.write(f"\n\n{test_name}\n{confusion_matrix(groundTruth, finalPredictions)}")
-        file.write(f"\nPrecision: {precision_score(groundTruth, finalPredictions, average='macro')}")
-        file.write(f"\nRecall: {recall_score(groundTruth, finalPredictions, average='macro')}")
-        file.write(f"\nAccuracy: {accuracy_score(groundTruth, finalPredictions)}")
+
+    print(confusion_matrix(groundTruth, finalPredictions))
+    print(precision_score(groundTruth, finalPredictions, average='macro'))
+    print(recall_score(groundTruth, finalPredictions, average='macro'))
+    print(accuracy_score(groundTruth, finalPredictions))
 
 '''
 def CrossFoldValidation(classifier="SVM"):
